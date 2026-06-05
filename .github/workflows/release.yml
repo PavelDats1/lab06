@@ -28,8 +28,8 @@ jobs:
 
     - name: Run tests
       run: |
-      cd build
-      ctest --output-on-failure || echo "No tests found"
+        cd build
+        ctest --output-on-failure || echo "No tests found"
 
     - name: Create DEB package
       run: cd build && cpack -G DEB
@@ -43,8 +43,8 @@ jobs:
     - name: Upload Linux packages
       uses: actions/upload-artifact@v4
       with:
-      name: linux-packages
-      path: build/*.deb build/*.rpm build/*.tar.gz
+        name: linux-packages
+        path: build/*.deb build/*.rpm build/*.tar.gz
 
   build-windows:
     runs-on: windows-latest
@@ -72,8 +72,8 @@ jobs:
     - name: Upload Windows packages
       uses: actions/upload-artifact@v4
       with:
-      name: windows-packages
-      path: build/*.msi
+        name: windows-packages
+        path: build/*.msi
 
   build-macos:
     runs-on: macos-latest
@@ -98,8 +98,8 @@ jobs:
     - name: Upload macOS packages
       uses: actions/upload-artifact@v4
       with:
-      name: macos-packages
-      path: build/*.dmg
+        name: macos-packages
+        path: build/*.dmg
 
   create-release:
     runs-on: ubuntu-latest
@@ -111,7 +111,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@v4
       with:
-      path: artifacts
+        path: artifacts
 
     - name: List all packages
       run: ls -la artifacts/*/*
@@ -119,6 +119,6 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-      files: artifacts/*/*
+        files: artifacts/*/*
       env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
