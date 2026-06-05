@@ -13,33 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
     - uses: actions/checkout@v4
-
     - name: Install dependencies
       run: sudo apt update && sudo apt install -y cmake build-essential rpm
-
     - name: Configure CMake
       run: cmake -B build -S .
-
     - name: Build
       run: cmake --build build
-
     - name: Run tests
-      run: |
-        cd build
-        ctest --output-on-failure || echo "No tests found"
-
+      run: cd build && ctest --output-on-failure || echo "No tests found"
     - name: Create DEB package
       run: cd build && cpack -G DEB
-
     - name: Create RPM package
       run: cd build && cpack -G RPM
-
     - name: Create TGZ package
       run: cd build && cpack -G TGZ
-
     - name: Upload Linux packages
       uses: actions/upload-artifact@v4
       with:
@@ -50,25 +39,20 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: write
-
     steps:
     - uses: actions/checkout@v4
-
     - name: Install WiX Toolset
-      run: choco install wixtoolset -y
-
+      run: choco install wixtoolset --version=3.14.0.8722 -y
     - name: Install CMake
-      run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
-
+      run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+    - name: Add WiX to PATH
+      run: echo "C:\Program Files (x86)\WiX Toolset v3.14\bin" >> $env:GITHUB_PATH
     - name: Configure CMake
       run: cmake -B build -S .
-
     - name: Build
       run: cmake --build build --config Release
-
     - name: Create MSI package
       run: cd build && cpack -G WIX
-
     - name: Upload Windows packages
       uses: actions/upload-artifact@v4
       with:
@@ -79,22 +63,16 @@ jobs:
     runs-on: macos-latest
     permissions:
       contents: write
-
     steps:
     - uses: actions/checkout@v4
-
     - name: Install dependencies
       run: brew install cmake
-
     - name: Configure CMake
       run: cmake -B build -S .
-
     - name: Build
       run: cmake --build build
-
     - name: Create DMG package
       run: cd build && cpack -G DragNDrop
-
     - name: Upload macOS packages
       uses: actions/upload-artifact@v4
       with:
@@ -107,15 +85,12 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     permissions:
       contents: write
-
     steps:
     - uses: actions/download-artifact@v4
       with:
         path: artifacts
-
-    - name: List all packages
+    - name: List packages
       run: ls -la artifacts/*/*
-
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
