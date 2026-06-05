@@ -41,12 +41,10 @@ jobs:
       contents: write
     steps:
     - uses: actions/checkout@v4
-    - name: Install WiX Toolset
-      run: choco install wixtoolset --version=3.14.0.8722 -y
+    - name: WiX is already installed
+      run: echo "WiX already present on runner"
     - name: Install CMake
       run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
-    - name: Add WiX to PATH
-      run: echo "C:\Program Files (x86)\WiX Toolset v3.14\bin" >> $env:GITHUB_PATH
     - name: Configure CMake
       run: cmake -B build -S .
     - name: Build
@@ -58,7 +56,6 @@ jobs:
       with:
         name: windows-packages
         path: build/*.msi
-
   build-macos:
     runs-on: macos-latest
     permissions:
