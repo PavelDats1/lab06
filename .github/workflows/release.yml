@@ -83,11 +83,15 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         path: artifacts
-    - name: List packages
-      run: ls -la artifacts/*/*
+    - name: Debug packages
+      run: |
+        find artifacts -type f
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        files: artifacts/*/*
+        files: |
+          artifacts/linux-packages/*
+          artifacts/windows-packages/*
+          artifacts/macos-packages/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
