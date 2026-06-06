@@ -27,11 +27,14 @@ jobs:
       run: cd build && cpack -G RPM
     - name: Create TGZ
       run: cd build && cpack -G TGZ
-    - name: Upload Linux
+    - name: Upload Linux packages
       uses: actions/upload-artifact@v4
       with:
         name: linux-packages
-        path: build/*.deb build/*.rpm build/*.tar.gz
+        path: |
+          build/*.deb
+          build/*.rpm
+          build/*.tar.gz
 
   build-windows:
     runs-on: windows-latest
@@ -47,7 +50,7 @@ jobs:
       run: cmake --build build --config Release
     - name: Create MSI
       run: cd build && cpack -G WIX
-    - name: Upload Windows
+    - name: Upload Windows packages
       uses: actions/upload-artifact@v4
       with:
         name: windows-packages
@@ -67,7 +70,7 @@ jobs:
       run: cmake --build build
     - name: Create DMG
       run: cd build && cpack -G DragNDrop
-    - name: Upload macOS
+    - name: Upload macOS packages
       uses: actions/upload-artifact@v4
       with:
         name: macos-packages
@@ -83,9 +86,14 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         path: artifacts
-    - name: Debug packages
+    - name: List all packages
       run: |
-        find artifacts -type f
+        echo "=== Linux packages ==="
+        ls -la artifacts/linux-packages/ || echo "No linux packages"
+        echo "=== Windows packages ==="
+        ls -la artifacts/windows-packages/ || echo "No windows packages"
+        echo "=== macOS packages ==="
+        ls -la artifacts/macos-packages/ || echo "No macos packages"
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
